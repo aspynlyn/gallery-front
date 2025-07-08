@@ -9,6 +9,14 @@ const router = createRouter({
       name: 'home',
       component: Home,
     },
+    {
+      path: '/join',
+      component: () => import('../views/Join.vue'),
+    },
+    {
+      path: '/login',
+      component: () => import('../views/Login.vue'),
+    },
   ],
 });
 
