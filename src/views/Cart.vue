@@ -1,5 +1,5 @@
 <script setup>
-import { getItems, removeItem } from '@/services/cartService';
+import { getItems, removeItem, clearItem } from '@/services/cartService';
 import { reactive, onMounted, computed } from 'vue';
 
 // 반응형 상태
@@ -7,8 +7,8 @@ const state = reactive({
   items: [],
 });
 
-let sum = 0;
 const totalPrice = computed(() => {
+  let sum = 0;
   state.items.forEach((i) => {
     sum += i.price - (i.price * i.discountPer) / 100;
   });
@@ -26,20 +26,32 @@ const load = async () => {
   state.items = res.data;
 };
 
-const remove = async (id) => {
-  const params = { id };
+const remove = async (cart_id) => {
   if (!confirm('삭제?')) {
     return;
   }
-  console.log('itemId', params);
-  const res = await removeItem(params);
+  console.log('cartId', cart_id);
+  const res = await removeItem(cart_id);
 
   if (res === undefined || res.status != 200) {
     return;
   }
   alert('삭제 완');
-  sum = 0;
+  console.log('객체', res.data);
   load();
+};
+
+const clear = async () => {
+  if (!confirm('다 삭제 할겨?')) {
+    return;
+  }
+  const res = await clearItem();
+  if (res === undefined || res.status != 200) {
+    return;
+  }
+  alert('모두 삭제 완');
+  console.log('객체', res.data);
+  state.items = [];
 };
 
 onMounted(() => {
@@ -65,12 +77,16 @@ onMounted(() => {
             >
           </li>
         </ul>
-        <div class="act">
+        <div class="total">
+          <b>총액 : </b>
+          <span>{{ totalPrice.toLocaleString() }}원</span>
+        </div>
+        <div class="act d-flex justify-content-around">
+          <button class="btn btn-danger" @click="clear">장바구니 비우기</button>
           <router-link to="/order" class="btn btn-primary"
             >주문하기</router-link
           >
         </div>
-        <div>합계 : {{ totalPrice.toLocaleString() }}원</div>
       </template>
       <div class="text-center py-5" v-else>장바구니가 비어있습니다</div>
     </div>
