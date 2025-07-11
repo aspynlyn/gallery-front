@@ -14,7 +14,7 @@ export const getItems = () => {
 };
 
 export const removeItem = (cart_id) => {
-  return axios.delete(`/${path}/${cart_id}`).catch((e) => e.response);
+  return axios.delete(`${path}/${cart_id}`).catch((e) => e.response);
   // 두번째 인자가 쿼리스트링으로 바뀌려면 params라는 속성 안에 값이 있는 객체를 넣어줘야함
 };
 

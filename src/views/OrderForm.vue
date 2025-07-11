@@ -23,6 +23,19 @@ const submit = async () => {
   state.form.itemIds = state.items.map((item) => item.itemId);
   console.log('id', state.form.itemIds);
   const res = await addOrder(state.form);
+  if (res === undefined || res.status !== 200) {
+    alert('에러 발생');
+    return;
+  }
+  const message = ['주문이 완료되었습니다'];
+  if (state.form.payment === 'bank') {
+    const price = computedTotalPrice.value.toLocaleString();
+    message.push(
+      `한국은행 123-456-789 계좌로 ${price}원 보내지않으면 네놈의 물건은 없다`
+    );
+  }
+  alert(message.join('\n'));
+  await router.push('/');
 };
 
 const load = async () => {
